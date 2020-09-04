@@ -67,25 +67,29 @@ def prepare_data(data_ts):
 
 
 def train_model(data_ts):
-    
+    logging.info('Creating model LSTM...')
     model = create_model_lstm((n_input, n_feature))
 
+    logging.info('Preparing Data.')
     train, test, scaler = prepare_data(data_ts)
 
     train_generator = TimeseriesGenerator(train, train, length=n_input, batch_size=6)
     model.compile(optimizer='adam', loss='mse')
 
+    logging.info('Starting model training')
     model.fit_generator(train_generator, epochs=70, verbose=1)
 
+    logging.info('Finished model training')
     return model, train, test, scaler
 
 
-def predict_model(model, scaler, train, input_to_predict):
+def predict_model(model, scaler, train, days_counts=30):
+    logging.info('Predicting data')
     pred_list = []
 
     batch = train[-n_input:].reshape((1, n_input, 1))
 
-    for i in range(input_to_predict.shape[0]):   
+    for i in range(days_counts):   
         pred_list.append(model.predict(batch)[0]) 
         batch = np.append(batch[:,1:,:],[[pred_list[i]]],axis=1)
         

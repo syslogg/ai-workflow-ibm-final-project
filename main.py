@@ -41,7 +41,7 @@ def train():
     return 'Training Complete!'
 
 
-@app.route('/predict', method=['POST'])
+@app.route('/predict')
 def predicted():
     global DATA
     global MODEL
@@ -49,11 +49,13 @@ def predicted():
     global TEST
     global SCALER
 
+    days = request.args.get('days', default=30, type=int)
+
     if TRAIN is None or MODEL is None or TEST is None or SCALER is None:
         return 'Please, execute /train before.'
 
-    data_input = request.get_json()
-    predict_data = predict_model(MODEL, SCALER, TRAIN, data_input)
+    #data_input = request.get_json()
+    predict_data = predict_model(MODEL, SCALER, TRAIN, days)
 
     return jsonify(predict_data)
 

@@ -1,13 +1,14 @@
 import pandas as pd
 import numpy as np
 import os
+import logging
 
 def gathering_raw_data(path):
     files_list = [path + '/' + fname for fname in os.listdir(path)]
     
     list_frame = []
     
-    print('Gathering Data by Json....')
+    logging.info('Gathering Data by Json....')
 
     for f in files_list:
         df_temp = pd.read_json(f)
@@ -30,13 +31,13 @@ def gathering_raw_data(path):
     dates = ["{}-{}-{}".format(years[i],str(months[i]).zfill(2),str(days[i]).zfill(2)) for i in range(df.shape[0])]
     df['invoice_date'] = np.array(dates,dtype='datetime64[D]')
     
-    print('Completed Step Gathering Data.')
+    logging.info('Completed Step Gathering Data.')
 
     return df
 
 def transform_timeseries(ds):
     
-    print('Transforming Data to TimeSeries....')
+    logging.info('Transforming Data to TimeSeries....')
 
     start_month = '{}-{}'.format(ds['year'].values[0],str(ds['month'].values[0]).zfill(2))
     stop_month = '{}-{}'.format(ds['year'].values[-1],str(ds['month'].values[-1]).zfill(2))
@@ -63,11 +64,11 @@ def transform_timeseries(ds):
         
         list_ts.append(obj_monted)
         
-    print('Complete Time Series')
+    logging.info('Complete Time Series')
     return pd.DataFrame(data=list_ts)
 
 def pipeline_gathering():
-    print('Start Pipeline Training')
+    logging.info('Start Pipeline Training')
     # 1. - Create a gathering data
 
     #   1.1 - Gathering data by json
@@ -76,11 +77,9 @@ def pipeline_gathering():
     #   1.2 - Transform Data to TimeSeries and Busines Oportunity
     time_series_revenue = transform_timeseries(all_data)
 
-    print('Finish pipeline')
+    logging.info('Finish pipeline')
     return time_series_revenue.to_dict('records')
     
-
-
 
 
 

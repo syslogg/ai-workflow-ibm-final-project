@@ -5,3 +5,4 @@ flask
 statsmodels
 scikit-learn
 pandas
+pytest
